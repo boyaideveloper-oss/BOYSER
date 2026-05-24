@@ -131,16 +131,18 @@ echo ""
 
 if [ -f "$MODEL_PATH" ]; then
   log "รัน llama-bench..."
+  LD_PRELOAD=/vendor/lib64/libOpenCL_adreno.so \
   "$LLAMA_DIR/build/bin/llama-bench" \
     -m "$MODEL_PATH" \
     -p 512 -n 128 \
+    -ngl 99 \
     -t $(nproc) \
     -o md 2>&1
 else
   warn "ยังไม่มี model — ใช้ path: $MODEL_PATH"
   echo ""
   echo -e "  รัน benchmark ด้วยตัวเอง:"
-  echo -e "  ${Y}$LLAMA_DIR/build/bin/llama-bench -m [path-to-model.gguf] -p 512 -n 128 -t $(nproc) -o md${NC}"
+  echo -e "  ${Y}LD_PRELOAD=/vendor/lib64/libOpenCL_adreno.so $LLAMA_DIR/build/bin/llama-bench -m [model.gguf] -p 512 -n 128 -ngl 99 -t \$(nproc) -o md${NC}"
 fi
 
 echo ""

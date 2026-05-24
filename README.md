@@ -83,11 +83,13 @@ bash /storage/emulated/0/BOYSER/build/build_llamacpp.sh
 
 ### Model Benchmark — Llama 3.2 3B (Q4_K_M)
 
-| Engine | Prompt Processing | Text Generation |
-|--------|------------------|----------------|
-| Ollama (pre-built) | 28 t/s | 12-15 t/s |
-| Custom Build (SVE2+i8mm) | **73 t/s** (+161%) | **14 t/s** (+15%) |
-| Termux + Adreno OpenCL *(เป้าหมาย)* | ~150 t/s | ~50 t/s |
+| Engine | Backend | Prompt (pp512) | Generate (tg128) |
+|--------|---------|---------------|-----------------|
+| Ollama (pre-built) | CPU | 28 t/s | 12 t/s |
+| Linux Custom Build (SVE2+i8mm) | CPU | 73 t/s | 14 t/s |
+| **Termux + Adreno 840 OpenCL** | **GPU** | **196 t/s** | **12 t/s** |
+
+GPU: QUALCOMM Adreno(TM) 840 — OpenCL 3.0 — 7,500 MB VRAM
 
 ---
 
@@ -108,20 +110,25 @@ Linux chroot
 
 ### วิธีแก้ (เรียงจากง่ายไปยาก)
 
-#### วิธีที่ 1 — Termux + OpenCL (แนะนำ)
-รัน llama.cpp บน Android side ตรงๆ ใน Termux  
-สามารถใช้ Adreno GPU ผ่าน OpenCL ได้เต็มที่
+#### วิธีที่ 1 — Termux + Adreno OpenCL (ทำสำเร็จแล้ว ✔)
+รัน llama.cpp บน Android side ใน Termux ด้วย Adreno 840 GPU
 
 ```bash
-# ใน Termux
-pkg install cmake git clang
-git clone --depth=1 https://github.com/ggml-org/llama.cpp
-cd llama.cpp
-cmake -B build -DGGML_OPENCL=ON \
-  -DCMAKE_C_FLAGS="-march=armv9-a+sve2+i8mm+bf16 -O3"
-cmake --build build -j$(nproc)
-# คาดหวัง: 40-80 t/s
+# ติดตั้งและ build อัตโนมัติ
+bash /storage/emulated/0/BOYSER/scripts/termux_llama_opencl.sh
+
+# รัน benchmark GPU
+bash /storage/emulated/0/BOYSER/scripts/gpu_run.sh bench
+
+# แชทด้วย GPU
+bash /storage/emulated/0/BOYSER/scripts/gpu_run.sh chat ~/models/llama3.2.gguf
+
+# คำสั่งตรง (ต้อง LD_PRELOAD เสมอ)
+LD_PRELOAD=/vendor/lib64/libOpenCL_adreno.so \
+  ~/llama.cpp/build/bin/llama-cli -m model.gguf -ngl 99 -cnv
 ```
+
+**ผลจริง: 196 t/s Prompt / 12 t/s Generate**
 
 #### วิธีที่ 2 — libhybris (ใน Linux chroot)
 Bridge ระหว่าง Bionic ↔ glibc เพื่อให้ Linux ใช้ Android OpenCL ได้  

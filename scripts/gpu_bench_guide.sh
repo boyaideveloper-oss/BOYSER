@@ -129,11 +129,14 @@ cat << 'RESULTS'
   │ Test                                 │ Prompt   │ Generate │
   ├──────────────────────────────────────┼──────────┼──────────┤
   │ Ollama (pre-built)                   │  28 t/s  │  12 t/s  │
-  │ Custom Build (SVE2+i8mm) ← ทำแล้ว   │  73 t/s  │  14 t/s  │
-  │ Termux + OpenCL (Adreno)  ← เป้าหมาย│ ~150 t/s │ ~50 t/s  │
-  │ GPU full (CUDA-class)     ← reference│ ~500 t/s │ ~150 t/s │
+  │ Linux Build (SVE2+i8mm)   ✔ done    │  73 t/s  │  14 t/s  │
+  │ Termux + Adreno 840 GPU   ✔ done    │ 196 t/s  │  12 t/s  │
+  │ GPU full (CUDA-class)     reference  │ ~500 t/s │ ~150 t/s │
   └──────────────────────────────────────┴──────────┴──────────┘
+
+  GPU: QUALCOMM Adreno(TM) 840 — OpenCL 3.0 — 7,500 MB VRAM
+  Key: LD_PRELOAD=/vendor/lib64/libOpenCL_adreno.so + -ngl 99
 
 RESULTS
 
-echo -e "  ${G}คำแนะนำ: ลองวิธีที่ 1 (Termux) ก่อน — เร็วสุดและง่ายสุดครับ${NC}\n"
+echo -e "  ${G}✔ GPU offload สำเร็จแล้ว! ใช้ scripts/gpu_run.sh เพื่อรันครับ${NC}\n"
