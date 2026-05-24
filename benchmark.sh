@@ -229,7 +229,7 @@ elif [ "$TOTAL" -ge 450 ]; then GRADE="B"  ; LABEL="AVERAGE"
 else                             GRADE="C"  ; LABEL="BELOW AVERAGE"; fi
 
 echo -e "\n  ${BOLD}${COLOR}  ★  Grade: ${GRADE}  —  ${LABEL}  ★${NC}\n"
-echo -e "  ${DIM}Baseline: Xiaomi (nezha) reference run — 2026-05-24${NC}"
+echo -e "  ${DIM}Device: Xiaomi 17 Ultra 16GB/512GB — 2026-05-24${NC}"
 echo -e "${DIM}  ──────────────────────────────────────────────────────${NC}\n"
 
 # ─────────────────────────────────────────────

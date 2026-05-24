@@ -61,13 +61,20 @@
 
 ## 📱 อุปกรณ์ที่ทดสอบ
 
+<div align="center">
+
+### Xiaomi 17 Ultra — 16GB / 512GB
+
+</div>
+
 | รายการ | ข้อมูล |
 |:-------|:-------|
+| **Device** | Xiaomi 17 Ultra (16GB / 512GB) |
 | **SoC** | Qualcomm Snapdragon (ARM64 aarch64) |
 | **CPU** | 8 cores · SVE2 · SME · i8mm · bf16 |
-| **GPU** | Adreno 840 — OpenCL 3.0 |
-| **RAM** | 15 GB |
-| **Storage** | 476 GB |
+| **GPU** | Adreno 840 — OpenCL 3.0 · 7,500 MB VRAM |
+| **RAM** | 16 GB (available ~15 GB) |
+| **Storage** | 512 GB (476 GB usable) |
 | **OS** | Ubuntu 24.04 LTS (Linux chroot) |
 | **Kernel** | Android 6.12.23 · KernelSU Next |
 
@@ -182,6 +189,6 @@ Detection:
 
 <div align="center">
 
-*Tested on 2026-05-24 · Snapdragon · KernelSU Next · Ubuntu 24.04*
+*Tested on 2026-05-24 · Xiaomi 17 Ultra · Snapdragon · KernelSU Next · Ubuntu 24.04*
 
 </div>
