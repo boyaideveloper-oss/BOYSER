@@ -1,0 +1,163 @@
+# BOYSER Benchmark Suite
+
+ชุดสคริปต์ benchmark สำหรับ Android + Linux (KernelSU Next)  
+ทดสอบ CPU, RAM, Disk, Crypto และ AI Model inference
+
+---
+
+## อุปกรณ์ที่ทดสอบ
+
+| รายการ | ข้อมูล |
+|--------|--------|
+| OS | Ubuntu 24.04.4 LTS (Linux chroot บน Android) |
+| Kernel | Android 6.12.23 (KernelSU Next) |
+| CPU | ARM64 aarch64 — 8 cores (SVE2, SME, i8mm, bf16) |
+| RAM | 15 GB |
+| Storage | 476 GB |
+| Root | KernelSU Next |
+
+---
+
+## โครงสร้างโปรเจกต์
+
+```
+BOYSER/
+├── benchmark.sh              ← System benchmark (CPU/RAM/Disk/Crypto)
+├── scripts/
+│   ├── model_bench.sh        ← AI Model inference benchmark
+│   └── gpu_bench_guide.sh    ← คู่มือ GPU offload + benchmark guide
+├── build/
+│   └── build_llamacpp.sh     ← Build llama.cpp พร้อม ARM optimizations
+├── .claude/commands/
+│   ├── benchmark.md          ← Claude Code skill: system benchmark
+│   ├── model-bench.md        ← Claude Code skill: model benchmark
+│   └── gpu-setup.md          ← Claude Code skill: GPU setup guide
+└── README.md
+```
+
+---
+
+## วิธีใช้งาน
+
+### 1. System Benchmark
+```bash
+bash /storage/emulated/0/BOYSER/benchmark.sh
+```
+
+### 2. Model Benchmark (ต้องรัน Ollama ก่อน)
+```bash
+ollama serve &
+bash /storage/emulated/0/BOYSER/scripts/model_bench.sh
+# หรือระบุ model อื่น
+bash /storage/emulated/0/BOYSER/scripts/model_bench.sh qwen2.5:7b
+```
+
+### 3. GPU Setup Guide
+```bash
+bash /storage/emulated/0/BOYSER/scripts/gpu_bench_guide.sh
+```
+
+### 4. Build llama.cpp (SVE2+i8mm optimized)
+```bash
+bash /storage/emulated/0/BOYSER/build/build_llamacpp.sh
+```
+
+---
+
+## ผลการทดสอบ (2026-05-24)
+
+### System Benchmark
+
+| หมวด | ผล | Rating | คะแนน |
+|------|-----|--------|-------|
+| CPU Single-Thread | 3,303 events/sec | GOOD | — |
+| CPU Multi-Thread (8 cores) | 22,564 events/sec | GOOD | 974/1000 |
+| CPU Efficiency | 85-94% | — | — |
+| RAM Read | 28-29 GB/s | EXCELLENT | 966/1000 |
+| RAM Write | 18-19 GB/s | EXCELLENT | — |
+| Disk Write | 2.3-2.6 GB/s | GOOD | 433/1000 |
+| Disk Read | 5.1-6.6 GB/s | EXCELLENT | — |
+| AES-256-CBC | 855-873 MB/s | EXCELLENT | 1023/1000 |
+| **คะแนนรวม** | — | — | **849-852 / 1000** |
+| **Grade** | — | — | **A+ HIGH-END** |
+
+### Model Benchmark — Llama 3.2 3B (Q4_K_M)
+
+| Engine | Prompt Processing | Text Generation |
+|--------|------------------|----------------|
+| Ollama (pre-built) | 28 t/s | 12-15 t/s |
+| Custom Build (SVE2+i8mm) | **73 t/s** (+161%) | **14 t/s** (+15%) |
+| Termux + Adreno OpenCL *(เป้าหมาย)* | ~150 t/s | ~50 t/s |
+
+---
+
+## GPU Offload — สถานะและแผน
+
+### ปัญหาปัจจุบัน
+
+เครื่องรัน Ubuntu บน Android kernel ผ่าน Linux chroot  
+GPU Adreno ใช้ driver `kgsl` ซึ่งเป็น Android-specific:
+
+```
+Linux chroot
+├── Mesa Turnip (freedreno)  ──▶ ต้องการ msm_drm GPU node ❌
+│                                แต่ได้แค่ SDE Display node
+└── Android Vulkan ICD       ──▶ ใช้ Bionic libc ❌
+    (vulkan.adreno.so)           ไม่ compatible กับ glibc
+```
+
+### วิธีแก้ (เรียงจากง่ายไปยาก)
+
+#### วิธีที่ 1 — Termux + OpenCL (แนะนำ)
+รัน llama.cpp บน Android side ตรงๆ ใน Termux  
+สามารถใช้ Adreno GPU ผ่าน OpenCL ได้เต็มที่
+
+```bash
+# ใน Termux
+pkg install cmake git clang
+git clone --depth=1 https://github.com/ggml-org/llama.cpp
+cd llama.cpp
+cmake -B build -DGGML_OPENCL=ON \
+  -DCMAKE_C_FLAGS="-march=armv9-a+sve2+i8mm+bf16 -O3"
+cmake --build build -j$(nproc)
+# คาดหวัง: 40-80 t/s
+```
+
+#### วิธีที่ 2 — libhybris (ใน Linux chroot)
+Bridge ระหว่าง Bionic ↔ glibc เพื่อให้ Linux ใช้ Android OpenCL ได้  
+ซับซ้อนกว่า แต่ไม่ต้องออกจาก Linux environment
+
+```bash
+# ต้อง build libhybris จาก source
+# https://github.com/libhybris/libhybris
+```
+
+#### วิธีที่ 3 — SVE2+i8mm Custom Build (ทำแล้ว ✔)
+CPU-only แต่ใช้ ARM extensions เต็มที่
+
+```bash
+bash /storage/emulated/0/BOYSER/build/build_llamacpp.sh
+```
+
+---
+
+## Claude Code Skills
+
+### วิธีใช้ skill ใน Claude Code
+เปิด Claude Code ในโฟลเดอร์ BOYSER แล้วใช้คำสั่ง:
+
+```
+/benchmark      ← รัน system benchmark
+/model-bench    ← รัน model benchmark
+/gpu-setup      ← ดู GPU setup guide
+```
+
+---
+
+## อ้างอิง
+
+- [llama.cpp](https://github.com/ggml-org/llama.cpp)
+- [Ollama](https://ollama.com)
+- [KernelSU Next](https://github.com/rifsxd/KernelSU-Next)
+- [libhybris](https://github.com/libhybris/libhybris)
+- Baseline: Snapdragon 8 Gen 2/3 community benchmarks
