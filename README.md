@@ -151,6 +151,27 @@
 
 </div>
 
+### ⚡ CPU+GPU Hybrid Benchmark — `-ngl` Layer Split
+
+<div align="center">
+
+> ทดสอบ offload transformer layers จาก 0% → 100% GPU (Llama 3.2 3B มี 28 layers)
+
+| ngl | GPU Layers | Prompt (pp512) | Generate (tg128) | แนะนำสำหรับ |
+|:---:|:----------:|:--------------:|:----------------:|:-----------|
+| 0   | 0% CPU only | 84 t/s | **12.4 t/s** | Chat / Generation |
+| 7   | 25% GPU | 64 t/s | 7.2 t/s | — |
+| 14  | 50% GPU | 82 t/s | 7.8 t/s | — |
+| 21  | 75% GPU | 110 t/s | 8.5 t/s | Balance |
+| **28** | **100% GPU** | **154 t/s** | 9.4 t/s | **RAG / Batch** |
+
+**Key Insight:**
+- **Prompt Processing** — ยิ่ง GPU เยอะ ยิ่งเร็ว (batch matrix multiply) → ใช้ `-ngl 28`
+- **Generation** — CPU ชนะ (sequential latency ต่ำกว่า) → ใช้ `-ngl 0`
+- ngl=7–14 ช้ากว่าทั้งคู่ เพราะ CPU↔GPU transfer overhead สูงกว่า compute ที่ได้
+
+</div>
+
 ---
 
 ## 📁 โครงสร้างโปรเจกต์
