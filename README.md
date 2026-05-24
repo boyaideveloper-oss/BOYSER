@@ -11,11 +11,12 @@
 
 **Android AI Benchmark Suite**
 
-[![Android](https://img.shields.io/badge/Android-KernelSU_Next-3DDC84?logo=android&logoColor=white)](https://github.com/rifsxd/KernelSU-Next)
-[![GPU](https://img.shields.io/badge/GPU-Adreno_840_OpenCL-FF6B35?logo=qualcomm&logoColor=white)](#gpu-benchmark)
-[![llama.cpp](https://img.shields.io/badge/llama.cpp-SVE2+i8mm-4B8BBE?logo=cplusplus&logoColor=white)](#build)
-[![Model](https://img.shields.io/badge/Model-Llama_3.2_3B-7C3AED?logo=meta&logoColor=white)](#model-benchmark)
-[![License](https://img.shields.io/badge/License-MIT-green)](#)
+[![Device](https://img.shields.io/badge/Xiaomi_17_Ultra-16GB/512GB-FF6900?logo=xiaomi&logoColor=white)](#-device-specs)
+[![SoC](https://img.shields.io/badge/Snapdragon_8_Elite-SM8850-3253DC?logo=qualcomm&logoColor=white)](#-device-specs)
+[![GPU](https://img.shields.io/badge/Adreno_840-OpenCL_3.0-FF6B35?logo=qualcomm&logoColor=white)](#-gpu-benchmark)
+[![llama.cpp](https://img.shields.io/badge/llama.cpp-SVE2+i8mm-4B8BBE?logo=cplusplus&logoColor=white)](#-build)
+[![ROM](https://img.shields.io/badge/Xiaomi_EU-HyperOS-FF6900?logo=xiaomi&logoColor=white)](#-device-specs)
+[![Root](https://img.shields.io/badge/KernelSU_Next-Rooted-00C853?logo=android&logoColor=white)](https://github.com/rifsxd/KernelSU-Next)
 
 *ชุดสคริปต์ benchmark CPU · RAM · Disk · AI Model สำหรับ Android + Linux*
 
@@ -23,7 +24,98 @@
 
 ---
 
-## 📊 ผลการทดสอบ
+## 📱 Device Specs
+
+<div align="center">
+
+### Xiaomi 17 Ultra — codename `nezha`
+
+</div>
+
+### ⚡ SoC — Qualcomm Snapdragon 8 Elite (SM8850)
+
+| รายการ | ข้อมูล |
+|:-------|:-------|
+| **SoC** | Qualcomm **SM8850** Snapdragon 8 Elite |
+| **Fab Process** | TSMC **3nm** |
+| **CPU Architecture** | Qualcomm **Oryon V2** (custom — ไม่ใช่ ARM Cortex มาตรฐาน) |
+| **CPU หมายเหตุ** | core เดียวกับ **Snapdragon X Elite** ที่ใช้ใน PC/Laptop |
+
+### 🔷 CPU Clusters
+
+| Cluster | Cores | Min | Max | ISA |
+|:--------|:-----:|:---:|:---:|:----|
+| Performance | cpu0–5 **(6 cores)** | 0.38 GHz | **3.63 GHz** | Oryon V2 |
+| Prime | cpu6–7 **(2 cores)** | 0.77 GHz | **4.40 GHz** | Oryon V2 |
+
+**ARM Extensions ที่รองรับ:**
+`SVE2` · `SME` · `SME2` · `i8mm` · `bf16` · `DOTPROD` · `AES` · `SHA3` · `PMULL`
+
+> 💡 **Oryon V2** มี **SME (Scalable Matrix Extension)** — ARM extension ที่ออกแบบมาสำหรับ AI/ML โดยเฉพาะ พบได้ในมือถือน้อยมาก
+
+### 🎮 GPU
+
+| รายการ | ข้อมูล |
+|:-------|:-------|
+| **GPU** | Qualcomm **Adreno 840** |
+| **Max Clock** | **902 MHz** |
+| **Idle Clock** | 191 MHz |
+| **OpenCL** | **3.0** (Adreno-specific kernels) |
+| **VRAM (shared)** | **7,500 MB** (free ~6,476 MB) |
+| **Vulkan** | 1.4 |
+
+### 💾 Memory & Storage
+
+| รายการ | ข้อมูล |
+|:-------|:-------|
+| **RAM** | **16 GB LPDDR5X** |
+| **RAM available** | ~15 GB (7.8 GB free) |
+| **Swap** | 16 GB |
+| **Storage** | **512 GB UFS 4.0** |
+| **Storage chip** | SK Hynix HN8T271EJKX152 |
+| **Usable** | ~476 GB |
+
+### 🖥️ Display
+
+| รายการ | ข้อมูล |
+|:-------|:-------|
+| **Resolution** | **1200 × 2608 px** |
+| **Refresh Rate** | **120Hz LTPO** (adaptive) |
+| **Density** | **480 DPI** |
+| **Panel** | AMOLED |
+
+### 🤖 AI / Compute Units
+
+| Unit | Device | หน้าที่ |
+|:-----|:------:|:--------|
+| **Hexagon NSP** | fastrpc-nsp1000 | Neural Signal Processor (AI inference) |
+| **ADSP** | fastrpc-adsp | Audio DSP |
+| **CDSP** | fastrpc-cdsp | Compute DSP |
+| **SVE2 + SME** | CPU | AI matrix multiply acceleration |
+
+### 🔋 Battery & Charging
+
+| รายการ | ข้อมูล |
+|:-------|:-------|
+| **ความจุ** | **6,000 mAh** |
+| **เคมี** | Li-poly |
+
+### 📡 Software & Connectivity
+
+| รายการ | ข้อมูล |
+|:-------|:-------|
+| **Android** | **16** (API 36) |
+| **ROM** | **Xiaomi EU HyperOS** |
+| **Build** | `OS3.0.306.0.WPACNXM` |
+| **Build Date** | April 23, 2026 |
+| **Codename** | `nezha` |
+| **Root** | **KernelSU Next** |
+| **Linux** | Ubuntu 24.04.4 LTS (chroot) |
+| **Kernel** | Android 6.12.23 |
+
+---
+
+## 📊 Benchmark Results
 
 ### System Benchmark
 
@@ -31,7 +123,9 @@
 
 | หมวด | ผล | Rating | คะแนน |
 |:-----|:--:|:------:|------:|
+| CPU Single-Thread | 3,303 ev/s | 🟡 GOOD | — |
 | CPU Multi-Thread (8 cores) | 22,564 ev/s | 🟡 GOOD | 974 |
+| CPU Efficiency | 94% | — | — |
 | RAM Read | 29.1 GB/s | 🟢 EXCELLENT | 966 |
 | RAM Write | 18.9 GB/s | 🟢 EXCELLENT | — |
 | Disk Read | 6.6 GB/s | 🟢 EXCELLENT | — |
@@ -39,7 +133,7 @@
 | AES-256-CBC | 873 MB/s | 🟢 EXCELLENT | 1023 |
 | **รวม** | | | **852 / 1000** |
 
-**Grade: `A+` HIGH-END**
+**🏆 Grade: `A+` HIGH-END**
 
 </div>
 
@@ -56,27 +150,6 @@
 > GPU: QUALCOMM Adreno™ 840 · OpenCL 3.0 · 7,500 MB VRAM
 
 </div>
-
----
-
-## 📱 อุปกรณ์ที่ทดสอบ
-
-<div align="center">
-
-### Xiaomi 17 Ultra — 16GB / 512GB
-
-</div>
-
-| รายการ | ข้อมูล |
-|:-------|:-------|
-| **Device** | Xiaomi 17 Ultra (16GB / 512GB) |
-| **SoC** | Qualcomm Snapdragon (ARM64 aarch64) |
-| **CPU** | 8 cores · SVE2 · SME · i8mm · bf16 |
-| **GPU** | Adreno 840 — OpenCL 3.0 · 7,500 MB VRAM |
-| **RAM** | 16 GB (available ~15 GB) |
-| **Storage** | 512 GB (476 GB usable) |
-| **OS** | Ubuntu 24.04 LTS (Linux chroot) |
-| **Kernel** | Android 6.12.23 · KernelSU Next |
 
 ---
 
@@ -144,21 +217,23 @@ LD_PRELOAD=/vendor/lib64/libOpenCL_adreno.so \
 
 ## 🔧 GPU Offload — วิธีที่ทำสำเร็จ
 
-สภาพแวดล้อมนี้รัน Ubuntu บน Android kernel (KernelSU Next)  
+สภาพแวดล้อมนี้รัน Ubuntu บน Android kernel (KernelSU Next)
 Adreno GPU ใช้ `kgsl` driver ซึ่ง Linux เข้าถึงตรงไม่ได้
 
 **Key ที่ทำให้ GPU ทำงาน:**
 
 ```bash
-# 1. ใช้ libOpenCL_adreno.so จาก Android vendor
+# 1. ใช้ libOpenCL_adreno.so จาก Android vendor โดยตรง
 LD_PRELOAD=/vendor/lib64/libOpenCL_adreno.so
 
 # 2. รันใน Termux (Android side) ที่เข้าถึง kgsl ได้
-# 3. Build พร้อม -DGGML_OPENCL_USE_ADRENO_KERNELS=ON
+# 3. Build พร้อม Adreno-specific OpenCL kernels
+cmake ... -DGGML_OPENCL_USE_ADRENO_KERNELS=ON \
+          -DOpenCL_LIBRARY=/vendor/lib64/libOpenCL.so
 ```
 
 ```
-Detection:
+GPU Detection:
   ggml_opencl: selected platform: 'QUALCOMM Snapdragon(TM)'
   ggml_opencl: device: 'QUALCOMM Adreno(TM) 840 (OpenCL 3.0)'
   Available: 7,500 MiB · Free: 6,476 MiB
@@ -189,6 +264,6 @@ Detection:
 
 <div align="center">
 
-*Tested on 2026-05-24 · Xiaomi 17 Ultra · Snapdragon · KernelSU Next · Ubuntu 24.04*
+*Tested on 2026-05-24 · Xiaomi 17 Ultra (nezha) · Snapdragon 8 Elite · KernelSU Next · Ubuntu 24.04*
 
 </div>
